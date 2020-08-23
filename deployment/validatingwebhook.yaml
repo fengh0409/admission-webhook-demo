@@ -1,0 +1,22 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validating-webhook-demo
+  labels:
+    app: validating-webhook-demo
+webhooks:
+  - name: validating-webhook.bazingafeng.com
+    clientConfig:
+      service:
+        name: admission-webhook-demo-svc
+        namespace: default
+        path: "/validate"
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNrekNDQWZ3Q0NRRDM2U2EycVNyazVEQU5CZ2txaGtpRzl3MEJBUVVGQURDQmpURUxNQWtHQTFVRUJoTUMKZUhneERUQUxCZ05WQkFnTUJIUmxjM1F4RFRBTEJnTlZCQWNNQkhSbGMzUXhEVEFMQmdOVkJBb01CSFJsYzNReApEVEFMQmdOVkJBc01CSFJsYzNReEx6QXRCZ05WQkFNTUptRmtiV2x6YzJsdmJpMTNaV0pvYjI5ckxXUmxiVzh0CmMzWmpMbVJsWm1GMWJIUXVjM1pqTVJFd0R3WUpLb1pJaHZjTkFRa0JGZ0poWVRBZUZ3MHlNREE0TWpNd09UUTAKTkRoYUZ3MHlNREE1TWpJd09UUTBORGhhTUlHTk1Rc3dDUVlEVlFRR0V3SjRlREVOTUFzR0ExVUVDQXdFZEdWegpkREVOTUFzR0ExVUVCd3dFZEdWemRERU5NQXNHQTFVRUNnd0VkR1Z6ZERFTk1Bc0dBMVVFQ3d3RWRHVnpkREV2Ck1DMEdBMVVFQXd3bVlXUnRhWE56YVc5dUxYZGxZbWh2YjJzdFpHVnRieTF6ZG1NdVpHVm1ZWFZzZEM1emRtTXgKRVRBUEJna3Foa2lHOXcwQkNRRVdBbUZoTUlHZk1BMEdDU3FHU0liM0RRRUJBUVVBQTRHTkFEQ0JpUUtCZ1FERgpWMW15SHlDOUErcWFFRFEwUFJNMW5mN2czTXVmVnhBRmMxSUVGdy92bVZrc0JONVBJK3gwekJJOGZmQUROSFpxCnEwakM5Z2pxY1VCWUpONnZ4R2VzQVZsN21FbHFCeXZzdm9WcUtpOEh5MVlFYnlxeCtvUDVnZTB3UU12L3hDenMKcFdmaGx0djRXVXo2R3ZHZ3VwaHkzSUsrYy96emNyS3NmVGU0UmZtaXN3SURBUUFCTUEwR0NTcUdTSWIzRFFFQgpCUVVBQTRHQkFKaS9GWDkvSWIzRDhCZFVRVHVVYXF5VkFuTXpVT0xlRFVrL01KckdSZFFxMkNTODJlODlDOEg0CmZsWHFEbk9id2tyam05RzB4VGFTQzN3RlNpZG1GRStGeXcrcm8xNzQ0bHp4Zk5ST0pnaitpWWlGQlZXWG5MTWcKZEl0bnRXUExjMmxnQjAxWFVIUFFUVDMzWS9tNk9PRjY4V3BDVEFBZUo1b0w1djMzQ0VkawotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    rules:
+      - operations: [ "CREATE","UPDATE","DELETE" ]
+        apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["deployments","deployments/scale","statefulsets","statefulsets/scale","daemonset","cronjob","job"]
+    admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+

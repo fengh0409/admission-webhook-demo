@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webhook-sidecar-injection
+data:
+  sidecar.yaml: |
+    containers:
+      - name: alpine
+        command: ["/bin/sh", "-c", "sleep 100000"]
+        image: alpine:latest
+        imagePullPoicy: IfNotPresent
+        restartPolicy: Always

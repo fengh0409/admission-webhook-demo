@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admission-webhook-demo
+  labels:
+    app: admission-webhook-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admission-webhook-demo
+  template:
+    metadata:
+      labels:
+        app: admission-webhook-demo
+    spec:
+      containers:
+      - name: admission-webhook-demo
+        image: admission-webhook-demo
+        imagePullPolicy: IfNotPresent
+        args:
+          - -tls-cert-file=/etc/webhook/certs/cert.pem
+          - -tls-private-key-file=/etc/webhook/certs/key.pem
+          - -sidecar-file=/etc/webhook/config/sidecar.yaml
+          - -logtostderr=true
+          - -v=1
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/webhook/certs
+          readOnly: true
+        - name: config
+          mountPath: /etc/webhook/config
+      volumes:
+      - name: certs
+        secret:
+          secretName: webhook-certs
+      - name: config
+        configMap:
+          name: webhook-sidecar-injection
