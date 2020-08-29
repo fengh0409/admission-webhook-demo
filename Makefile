@@ -9,6 +9,9 @@ build:
 image: build
 	docker build -t admission-webhook-demo .
 
+deploy:
+	kubectl apply -f deployment
+
 update: image
 	kubectl delete -f deployment/mutatingwebhook.yaml || true
 	kubectl delete -f deployment/validatingwebhook.yaml || true
