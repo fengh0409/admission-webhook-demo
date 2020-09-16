@@ -8,4 +8,5 @@ require (
 	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.18.8
 	k8s.io/apimachinery v0.18.8
+	sigs.k8s.io/yaml v1.2.0
 )

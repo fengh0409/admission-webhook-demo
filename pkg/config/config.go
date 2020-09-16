@@ -6,8 +6,8 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/golang/glog"
-	yaml "gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
+	yaml "sigs.k8s.io/yaml"
 )
 
 // Conf is the global config

@@ -14,7 +14,7 @@ func Validate(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveValidate(ar v1.AdmissionReview) *v1.AdmissionResponse {
-	glog.Info("admit " + ar.Request.Kind.Kind)
+	glog.Infof("admit %v %v", ar.Request.Kind.Kind, ar.Request.Operation)
 
 	var err error
 	switch ar.Request.Kind.Kind {

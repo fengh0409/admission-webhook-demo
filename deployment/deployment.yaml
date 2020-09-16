@@ -30,6 +30,8 @@ spec:
           readOnly: true
         - name: config
           mountPath: /etc/webhook/config
+        - name: localtime
+          mountPath: /etc/localtime
       volumes:
       - name: certs
         secret:
@@ -37,3 +39,6 @@ spec:
       - name: config
         configMap:
           name: webhook-sidecar-injection
+      - name: localtime
+        hostPath:
+          path: /etc/localtime

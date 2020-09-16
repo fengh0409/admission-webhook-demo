@@ -16,7 +16,7 @@ webhooks:
       - operations: [ "CREATE","UPDATE","DELETE" ]
         apiGroups: ["*"]
         apiVersions: ["*"]
-        resources: ["deployments","deployments/scale","statefulsets","statefulsets/scale","daemonset","cronjob","job"]
+        resources: ["deployments","deployments/scale","statefulsets","statefulsets/scale","daemonsets","cronjobs","jobs"]
     admissionReviewVersions: ["v1", "v1beta1"]
     sideEffects: None
 

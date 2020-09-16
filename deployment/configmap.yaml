@@ -5,8 +5,14 @@ metadata:
 data:
   sidecar.yaml: |
     containers:
-      - name: alpine
-        command: ["/bin/sh", "-c", "sleep 100000"]
-        image: alpine:latest
-        imagePullPoicy: IfNotPresent
-        restartPolicy: Always
+    - name: sidecar
+      command: ["/bin/sh", "-c", "sleep 100000"]
+      image: alpine:latest
+      imagePullPoicy: IfNotPresent
+      restartPolicy: Always
+      volumeMounts:
+      - name: sidecar-volume
+        mountPath: /opt/sidecar
+    volumes:
+    - name: sidecar-volume
+      emptyDir: {}

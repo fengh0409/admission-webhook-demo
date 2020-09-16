@@ -6,6 +6,12 @@ metadata:
     app: mutating-webhook-demo
 webhooks:
     - name: mutating-webhook.bazingafeng.com
+      namespaceSelector:
+        matchExpressions:
+        - key: sidecar-injection
+          operator: NotIn
+          values:
+          - disabled
       clientConfig:
         service:
           name: admission-webhook-demo-svc

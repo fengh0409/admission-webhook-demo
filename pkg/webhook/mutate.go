@@ -18,40 +18,53 @@ const (
 
 var podResource = metav1.GroupVersionResource{Group: "", Version: "v1", Resource: "pods"}
 
+var sidecarVolumeMounts = []corev1.VolumeMount{
+	{
+		Name:      "sidecar-volume",
+		MountPath: "/opt/sidecar",
+		ReadOnly:  true,
+	},
+}
+
 func Mutate(w http.ResponseWriter, r *http.Request) {
 	serve(w, r, serveInjection)
 }
 
 func serveInjection(ar v1.AdmissionReview) *v1.AdmissionResponse {
 	glog.Info("admit injection")
-	if ar.Request.Resource != podResource {
+	var req = ar.Request
+	if req.Resource != podResource {
 		err := fmt.Errorf("expect resource to be %s", podResource)
+		glog.Error(err)
 		return toAdmissionResponse(err)
 	}
 
-	raw := ar.Request.Object.Raw
-	pod := corev1.Pod{}
-	deserializer := codecs.UniversalDeserializer()
-	if _, _, err := deserializer.Decode(raw, nil, &pod); err != nil {
-		return toAdmissionResponse(err)
+	if req.Operation != v1.Create {
+		return &v1.AdmissionResponse{
+			Allowed: true,
+		}
 	}
 
-	var reviewResponse = &v1.AdmissionResponse{
-		Allowed: true,
+	var pod corev1.Pod
+	if err := json.Unmarshal(req.Object.Raw, &pod); err != nil {
+		glog.Error(err)
+		return toAdmissionResponse(err)
 	}
 
 	// inject containers
 	annotations := map[string]string{admissionWebhookAnnotationInjectKey: "injected"}
 	patchBytes, err := createPatch(&pod, config.Conf.Sidecar, annotations)
 	if err != nil {
+		glog.Error(err)
 		return toAdmissionResponse(err)
 	}
 
 	pt := v1.PatchTypeJSONPatch
-	reviewResponse.Patch = patchBytes
-	reviewResponse.PatchType = &pt
-
-	return reviewResponse
+	return &v1.AdmissionResponse{
+		Allowed:   true,
+		Patch:     patchBytes,
+		PatchType: &pt,
+	}
 }
 
 type patchOperation struct {
@@ -89,8 +102,37 @@ func addContainer(target, added []corev1.Container, basePath string) []patchOper
 			Value: value,
 		})
 	}
+
+	patch = append(patch, addVolumeMounts(target)...)
+
 	return patch
 }
+
+func addVolumeMounts(containers []corev1.Container) (patch []patchOperation) {
+	basePath := "/spec/containers/%d/volumeMounts"
+	for i := range containers {
+		if len(containers[i].VolumeMounts) == 0 {
+			path := fmt.Sprintf(basePath, i)
+			patch = append(patch, patchOperation{
+				Op:    "add",
+				Path:  path,
+				Value: sidecarVolumeMounts,
+			})
+		} else {
+			path := fmt.Sprintf(basePath+"/-", i)
+			for _, volumeMount := range sidecarVolumeMounts {
+				patch = append(patch, patchOperation{
+					Op:    "add",
+					Path:  path,
+					Value: volumeMount,
+				})
+			}
+		}
+	}
+
+	return patch
+}
+
 func addVolume(target, added []corev1.Volume, basePath string) (patch []patchOperation) {
 	first := len(target) == 0
 	var value interface{}
