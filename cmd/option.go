@@ -19,7 +19,7 @@ func (o *Option) addFlags() {
 	flag.IntVar(&o.Port, "port", defaultPort, "server port")
 	flag.StringVar(&o.SidecarFile, "sidecar-file", o.SidecarFile, "sidecar file")
 	flag.StringVar(&o.CertFile, "tls-cert-file", o.CertFile, "tls cert file")
-	flag.StringVar(&o.KeyFile, "tls-private-key-file", o.KeyFile, "tls cert file")
+	flag.StringVar(&o.KeyFile, "tls-private-key-file", o.KeyFile, "tls private key file")
 }
 
 func (o *Option) configTLS() (*tls.Config, error) {

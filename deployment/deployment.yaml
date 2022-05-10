@@ -19,8 +19,8 @@ spec:
         image: admission-webhook-demo
         imagePullPolicy: IfNotPresent
         args:
-          - -tls-cert-file=/etc/webhook/certs/cert.pem
-          - -tls-private-key-file=/etc/webhook/certs/key.pem
+          - -tls-cert-file=/etc/webhook/certs/server.crt
+          - -tls-private-key-file=/etc/webhook/certs/server.key
           - -sidecar-file=/etc/webhook/config/sidecar.yaml
           - -logtostderr=true
           - -v=1
