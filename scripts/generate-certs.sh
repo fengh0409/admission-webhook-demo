@@ -28,7 +28,10 @@ CN = ${CN}
 subjectAltName = @alt_names
 
 [ alt_names ]
-DNS.1 = admission-webhook-demo.default.svc
+DNS.1 = admission-webhook-demo
+DNS.2 = admission-webhook-demo.default
+DNS.3 = admission-webhook-demo.default.svc
+IP.1 = 127.0.0.1
 
 [ v3_ext ]
 authorityKeyIdentifier=keyid,issuer:always
