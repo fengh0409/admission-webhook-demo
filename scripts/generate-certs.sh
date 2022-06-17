@@ -3,9 +3,9 @@
 CN="Wise2c CA"
 # generate ca.key
 openssl genrsa -out ca.key 2048
-# generate ca.crt
+# generate ca.crt => caBundle
 openssl req -x509 -new -nodes -key ca.key -subj "/CN=${CN}" -days 36500 -out ca.crt
-# generate server.key
+# generate server.key => tls.key
 openssl genrsa -out server.key 2048
 # generate csr.conf
 cat << EOF > csr.conf
@@ -43,5 +43,5 @@ EOF
 
 # generate server.csr
 openssl req -new -key server.key -out server.csr -config csr.conf
-# generate server.crt
+# generate server.crt => tls.crt
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 36500 -extensions v3_ext -extfile csr.conf
